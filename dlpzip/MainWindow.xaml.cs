@@ -33,22 +33,26 @@ namespace dlpzip
         {
             DateTime ncts; // next check time stamp
            
-            const string userRoot = "HKEY_LOCAL_MACHINE";
+            const string userRoot = "HKEY_CURRENT_USER";
             const string subkey = "SOFTWARE\\DLPZip";
             const string keyName = userRoot + "\\" + subkey;
 
-            RegistryKey rkey = Registry.LocalMachine.OpenSubKey("SOFTWARE");
+            try
+            {
+                var regval = (long)Registry.GetValue(keyName, "NCTS", 0);
+                ncts = DateTime.FromBinary(regval);
+            }
+            catch(NullReferenceException)
+            {
+                ncts = DateTime.MinValue;
+            }
 
-            //var result = (long)rk.GetValue("NCTS", 0);
-            String[] names = rkey.GetSubKeyNames();
-            foreach (String s in names)
-                Trace.WriteLine(s);
-
-            //ncts = DateTime.FromBinary(result);
-
-            if(1 > 0)
+            if(DateTime.Now >= ncts)
             {
                 Trace.WriteLine("rereading config");
+
+                //TODO write time + delay to registry
+                Registry.SetValue(keyName, "NCTS", DateTime.Now.ToBinary(), RegistryValueKind.QWord);
             }
         }
         //foreach (String path in inputfiles)
