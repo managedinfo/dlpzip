@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dlpzip", "dlpzip.csproj", "{5D49112D-D97B-44D6-992F-B053D19A3238}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dlpzipcons", "..\dlpzipcons\dlpzipcons.csproj", "{3986E043-DD68-43E4-9C59-AEABA2818AD9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dlpziplib", "dlpziplib\dlpziplib.csproj", "{D3177083-9264-4432-81FF-16CFF024C559}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{5D49112D-D97B-44D6-992F-B053D19A3238}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D49112D-D97B-44D6-992F-B053D19A3238}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D49112D-D97B-44D6-992F-B053D19A3238}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3986E043-DD68-43E4-9C59-AEABA2818AD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3986E043-DD68-43E4-9C59-AEABA2818AD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3986E043-DD68-43E4-9C59-AEABA2818AD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3986E043-DD68-43E4-9C59-AEABA2818AD9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3177083-9264-4432-81FF-16CFF024C559}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3177083-9264-4432-81FF-16CFF024C559}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3177083-9264-4432-81FF-16CFF024C559}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3177083-9264-4432-81FF-16CFF024C559}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
