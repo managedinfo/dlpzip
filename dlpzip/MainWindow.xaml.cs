@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Win32; // for registry
+using System.Diagnostics; // for trace output
 
 namespace dlpzip
 {
@@ -22,85 +24,51 @@ namespace dlpzip
     {
         public MainWindow()
         {
-            InitializeComponent();
+            string[] args = Environment.GetCommandLineArgs();
+            ReadConfig();
+            if(false) InitializeComponent();
         }
 
-        //TODO Glob input before doing this?
-        Console.WriteLine("Adding {0} files to {1}", inputfiles.Count, archive);
+        private void ReadConfig()
+        {
+            DateTime ncts; // next check time stamp
+           
+            const string userRoot = "HKEY_LOCAL_MACHINE";
+            const string subkey = "SOFTWARE\\DLPZip";
+            const string keyName = userRoot + "\\" + subkey;
 
-            Regex rgx = new Regex(filenamePattern, RegexOptions.IgnoreCase);
-        String filename;
-        String clientCode = null;
-        String parentDir = null;
-        Match m;
+            RegistryKey rkey = Registry.LocalMachine.OpenSubKey("SOFTWARE");
 
-            foreach (String path in inputfiles)
+            //var result = (long)rk.GetValue("NCTS", 0);
+            String[] names = rkey.GetSubKeyNames();
+            foreach (String s in names)
+                Trace.WriteLine(s);
+
+            //ncts = DateTime.FromBinary(result);
+
+            if(1 > 0)
             {
-                Console.Write(" + {0}", path);
-                filename = Path.GetFileNameWithoutExtension(path);
-                m = rgx.Match(filename);
-                if (m.Success)
-                { 
-                    Console.Write(" - Correct Name Format");
-                    if (clientCode == null)
-                    {
-                        clientCode = m.Value;
-                        Console.Write(" - Setting client code to '{0}'", clientCode.Substring(0,10));
-                    }
-                    else if(filename.StartsWith(clientCode))
-                    {
-                        Console.Write(" - Matching client code");
-                    }
-                    else
-                    {
-                        Console.WriteLine(" - Mismatched client code");
-                        return;
-                    }
-
-                    String fileParentDir = Path.GetDirectoryName(Path.GetFullPath(path));
-fileParentDir = fileParentDir.Substring(fileParentDir.LastIndexOf(@"\") + 1);
-
-                    if (parentDir == null)
-                    {
-                        parentDir = fileParentDir;
-                        Console.WriteLine(" - Parent directory set to '{0}'", parentDir);
-                    }
-                    else
-                    {
-                        if (String.Compare(parentDir, fileParentDir, true) == 0)
-                        {
-                            Console.WriteLine(" - Matching parent directory");
-                        }
-                        else
-                        {
-                            Console.WriteLine(" - Mismatched parent directory '{0}'", fileParentDir);
-                            return;
-                        }
-                    }
-                }
-                else
-                {
-                    Console.WriteLine(" - Ìncorrect Name Format '{0}'", filename);
-                    return;
-                }
+                Trace.WriteLine("rereading config");
             }
+        }
+        //foreach (String path in inputfiles)
+        //{
 
-            using (var zip = new ZipFile())
-            {
-                foreach (String path in inputfiles)
-                {
-                    filename = Path.GetFileName(path);
-                    filename = filename.Replace(clientCode, "");
-                    ZipEntry ze = zip.AddFile(path);
-                    ze.FileName = filename;
-                    ze.Password = clientCode.Substring(1, 9);
-                }
+        //using (var zip = new ZipFile())
+        //{
+        //    foreach (String path in inputfiles)
+        //    {
+        //        filename = Path.GetFileName(path);
+        //        filename = filename.Replace(clientCode, "");
+        //        ZipEntry ze = zip.AddFile(path);
+        //        ze.FileName = filename;
+        //        ze.Password = clientCode.Substring(1, 9);
+        //    }
 
-                // Add tracking content
-                zip.AddEntry("NPDDLP.txt", parentDir);
+        //    // Add tracking content
+        //    zip.AddEntry("NPDDLP.txt", parentDir);
 
-                zip.Save(archive);
-            }
+        //    zip.Save(archive);
 
     }
 }
