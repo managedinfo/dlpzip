@@ -26,7 +26,7 @@ namespace dlpzip
         {
             string[] args = Environment.GetCommandLineArgs();
             ReadConfig();
-            if(false) InitializeComponent();
+            //if(false) InitializeComponent();
         }
 
         private void ReadConfig()
@@ -54,6 +54,9 @@ namespace dlpzip
                 //TODO write time + delay to registry
                 Registry.SetValue(keyName, "NCTS", DateTime.Now.ToBinary(), RegistryValueKind.QWord);
             }
+
+            //string json = @"{""key1"":""value1"",""key2"":""value2""}";
+            //JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(json);
         }
         //foreach (String path in inputfiles)
         //{
