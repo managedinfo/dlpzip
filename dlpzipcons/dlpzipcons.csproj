@@ -49,7 +49,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\dlpzip\dlpziplib\dlpziplib.csproj">
+    <ProjectReference Include="..\dlpziplib\dlpziplib.csproj">
       <Project>{d3177083-9264-4432-81ff-16cff024c559}</Project>
       <Name>dlpziplib</Name>
     </ProjectReference>

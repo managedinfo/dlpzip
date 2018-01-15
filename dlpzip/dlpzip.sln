@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dlpzip", "dlpzip.csproj", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dlpzipcons", "..\dlpzipcons\dlpzipcons.csproj", "{3986E043-DD68-43E4-9C59-AEABA2818AD9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dlpziplib", "dlpziplib\dlpziplib.csproj", "{D3177083-9264-4432-81FF-16CFF024C559}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dlpziplib", "..\dlpziplib\dlpziplib.csproj", "{D3177083-9264-4432-81FF-16CFF024C559}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
