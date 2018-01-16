@@ -7,12 +7,13 @@ using Microsoft.Win32; // for registry
 using System.Diagnostics; // for trace output
 using System.IO; // for file copies
 using System.Net; //for url copies
+using Newtonsoft.Json;
 
 namespace dlpziplib
 {
     public class Config
     {
-        private const string localConfigFile = "DLPZip.config";
+        public const string localConfigFile = "DLPZip.config";
 
         public static void ReadConfig()
         {
@@ -90,6 +91,19 @@ namespace dlpziplib
         {
             //decrypt
             Trace.WriteLine("DLPZip.exe: Config encryption not implemented");
+
+            JsonTextReader reader = new JsonTextReader(File.OpenText(localConfigFile));
+            while (reader.Read())
+            {
+                if (reader.Value != null)
+                {
+                    Debug.WriteLine("DLPZip.exe: Token: {0}, Value: {1}", reader.TokenType, reader.Value);
+                }
+                else
+                {
+                    Debug.WriteLine("DLPZip.exe: Token: {0}", reader.TokenType);
+                }
+            }
             return;
         }
         //foreach (String path in inputfiles)
