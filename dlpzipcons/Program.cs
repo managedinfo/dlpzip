@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Diagnostics; // for trace output
 using System.Text.RegularExpressions; //to parse arguments
-using Newtonsoft.Json; // to write config
-using System.IO; // to write config
 
 using dlpziplib;
 
@@ -15,17 +12,21 @@ namespace dlpzipcons
 {
     class Program
     {
+        private static String archiveFile;
+        private static String[] files;
+        private static DLPZipConfig config;
+
         static void Main(string[] args)
         {
             if (args.Length < 2)
             {
-                System.Console.WriteLine("Usage: to be completed");
+                DLPZipUsage();
                 return;
             }
             else if (args[0] == @"writeConfig")
             {
                 DLPZipConfig newConfig = new DLPZipConfig();
-                Trace.WriteLine("DLPZip.exe: Writing Configuration file");
+                DLPZipUtil.Trace("Writing Configuration file");
 
                 String pattern = @"^(.*):""?(.*)""?";
 
@@ -51,13 +52,51 @@ namespace dlpzipcons
                         }
                     }
                 }
-                using (StreamWriter sw = File.CreateText(Config.localConfigFile))
-                {
-                    sw.WriteLine(JsonConvert.SerializeObject(newConfig));
-                }
+                Config.WriteConfig(newConfig);
                 return;
             }
-            Config.ReadConfig();
+
+            config = Config.ReadConfig();
+
+            archiveFile = args[1];
+            files = args.Skip(2).Take(args.Length).ToArray();
+
+            DLPZipUtil.Trace("Archive file is", archiveFile);
+            DLPZipUtil.Trace("Argument files are", String.Join(", ", files));
+
+            switch (args[0])
+            {
+                case "a":
+                    addFiles();
+                    break;
+                case "b":
+                case "d":
+                case "e":
+                case "h":
+                case "i":
+                case "l":
+                case "rn":
+                case "t":
+                case "u":
+                case "x":
+                    Console.WriteLine("Argument ", args[0], "not implemented");
+                    break;
+                default:
+                    DLPZipUsage();
+                    break;
+            }
+        }
+
+        private static void addFiles()
+        {
+            DLPZipUtil.Trace("addFiles()");
+
+            DLPZipUtil.Trace("~addFiles()");
+        }
+
+        private static void DLPZipUsage()
+        {
+            System.Console.WriteLine("Usage: to be completed");
         }
     }
 }

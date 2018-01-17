@@ -15,52 +15,52 @@ namespace dlpziplib
     {
         public const string localConfigFile = "DLPZip.config";
 
-        public static void ReadConfig()
+        public static DLPZipConfig ReadConfig()
         {
-            Trace.WriteLine("DLPZip.exe: ReadConfig()");
+            DLPZipUtil.Trace("ReadConfig()");
             DateTime ncts; // next check time stamp
+            DLPZipConfig config;
 
             const string userRoot = "HKEY_CURRENT_USER";
             const string subkey = "SOFTWARE\\DLPZip";
             const string keyName = userRoot + "\\" + subkey;
 
-            
-
+ 
             try
             {
                 var regval = (long)Registry.GetValue(keyName, "NCTS", 0);
-                Trace.WriteLine("DLPZip.exe: Read " + regval.ToString() + " from " + keyName);
+                DLPZipUtil.Trace("Read " + regval.ToString() + " from " + keyName);
                 ncts = DateTime.FromBinary(regval);
-                Trace.WriteLine("DLPZip.exe: Parsed ncts as " + ncts.ToString());
+                DLPZipUtil.Trace("Parsed ncts as " + ncts.ToString());
             }
             catch (NullReferenceException)
             { 
                 ncts = DateTime.MinValue;
-                Trace.WriteLine("DLPZip.exe: " + keyName + " not read, using " + ncts.ToString());
+                DLPZipUtil.Trace(keyName + " not read, using " + ncts.ToString());
             }
 
             if (DateTime.Now >= ncts)
             {
-                Trace.WriteLine("DLPZip.exe: Re-reading config");
+                DLPZipUtil.Trace("Re-reading config");
                 String configSource;
 
                 try
                 {
                     var regval = (String)Registry.GetValue(keyName, "ConfigLocation", "");
-                    Trace.WriteLine("DLPZip.exe: Read '" + regval.ToString() + "' from " + keyName);
+                    DLPZipUtil.Trace("Read '" + regval.ToString() + "' from " + keyName);
                     if (regval.Length == 0)
                         throw new ArgumentNullException("ConfigLocation not defined");
                     configSource = regval.ToString();
                 }
                 catch (NullReferenceException)
                 {
-                    Trace.WriteLine("DLPZip.exe: " + keyName + " not read, using ConfigLocation");
+                    DLPZipUtil.Trace(keyName + " not read, using ConfigLocation");
                     throw new ArgumentNullException("ConfigLocation");
                 }
 
                 if (configSource.StartsWith("http"))
                 {
-                    Trace.WriteLine("DLPZip.exe: ConfigLocation is a URL");
+                    DLPZipUtil.Trace("ConfigLocation is a URL");
 
                     using (var client = new WebClient())
                     {
@@ -69,42 +69,49 @@ namespace dlpziplib
                 }
                 else
                 {
-                    Trace.WriteLine("DLPZip.exe: Assuming ConfigLocation is a path");
+                    DLPZipUtil.Trace("Assuming ConfigLocation is a path");
                     File.Copy(configSource, localConfigFile, true);
                 }
+                config = ParseConfig();
                 //TODO write time + delay to registry
-                Registry.SetValue(keyName, "NCTS", DateTime.Now.ToBinary(), RegistryValueKind.QWord);
+                Registry.SetValue(keyName, "NCTS", DateTime.Now.AddSeconds(config.configRefreshPeriod).ToBinary(), RegistryValueKind.QWord);
             }
             else
             {
-                Trace.WriteLine("Not re-reading config");
+                DLPZipUtil.Trace("Not re-reading config");
+                config = ParseConfig();
             }
 
-            ParseConfig();
+            DLPZipUtil.Trace("~ReadConfig()");
 
-            //string json = @"{""key1"":""value1"",""key2"":""value2""}";
-            //JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(json);
-            Trace.WriteLine("DLPZip.exe: ~ReadConfig()");
+            return config;
         }
 
-        private static void ParseConfig()
+        public static void WriteConfig(DLPZipConfig c)
         {
-            //decrypt
-            Trace.WriteLine("DLPZip.exe: Config encryption not implemented");
-
-            JsonTextReader reader = new JsonTextReader(File.OpenText(localConfigFile));
-            while (reader.Read())
+            DLPZipUtil.Trace("WriteConfig()");
+            using (StreamWriter sw = File.CreateText(Config.localConfigFile))
             {
-                if (reader.Value != null)
-                {
-                    Debug.WriteLine("DLPZip.exe: Token: {0}, Value: {1}", reader.TokenType, reader.Value);
-                }
-                else
-                {
-                    Debug.WriteLine("DLPZip.exe: Token: {0}", reader.TokenType);
-                }
+                sw.WriteLine(JsonConvert.SerializeObject(c));
             }
-            return;
+            DLPZipUtil.Trace("~WriteConfig()");
+        }
+
+        private static DLPZipConfig ParseConfig()
+        {
+            DLPZipUtil.Trace("ParseConfig()");
+            DLPZipConfig config;
+            //decrypt
+            DLPZipUtil.Trace("Config encryption not implemented");
+
+            using (StreamReader file = File.OpenText(localConfigFile))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                config = (DLPZipConfig)serializer.Deserialize(file, typeof(DLPZipConfig));
+            }
+
+            DLPZipUtil.Trace("~ParseConfig()");
+            return config;
         }
         //foreach (String path in inputfiles)
         //{
