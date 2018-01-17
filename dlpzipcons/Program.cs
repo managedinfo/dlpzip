@@ -63,6 +63,15 @@ namespace dlpzipcons
 
             DLPZipUtil.Trace("Archive file is", archiveFile);
             DLPZipUtil.Trace("Argument files are", String.Join(", ", files));
+            foreach(String s in files)
+            {
+                String[] files = DLPZipUtil.ExpandFiles(s);
+                foreach(String f in files)
+                {
+                    DLPZipUtil.Trace("Expanded file name: ", f);
+                }
+            }
+            
 
             switch (args[0])
             {
