@@ -22,8 +22,10 @@ namespace dlpziplib
         {
             Trace("ExpandFiles()");
             String[] files;
+            String root = Path.GetDirectoryName(path);
+            if (root.Length == 0) root = ".\\";
 
-            files = Directory.GetFiles(Path.GetDirectoryName(path), Path.GetFileName(path));
+            files = Directory.GetFiles(root, Path.GetFileName(path));
 
             Trace("~ExpandFiles()");
             return files;
