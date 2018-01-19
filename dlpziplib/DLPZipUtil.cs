@@ -18,17 +18,27 @@ namespace dlpziplib
         {
             System.Diagnostics.Debug.WriteLine("DLPZip.exe: " + String.Join(" ", msg));
         }
-        public static String[] ExpandFiles(String path)
+        public static List<String> ExpandFiles(String path)
         {
             Trace("ExpandFiles()");
             String[] files;
             String root = Path.GetDirectoryName(path);
-            if (root.Length == 0) root = ".\\";
+            Trace("root is:", root);
+            Trace("FileName is:", Path.GetFileName(path));
+            if (root.Length == 0)
+            {
+                files = Directory.GetFiles(Directory.GetCurrentDirectory(), Path.GetFileName(path));
+            }
+            else
+                files = Directory.GetFiles(root, Path.GetFileName(path));
 
-            files = Directory.GetFiles(root, Path.GetFileName(path));
+            foreach (String f in files)
+            {
+                Trace("Expanded file name: ", f);
+            }
 
             Trace("~ExpandFiles()");
-            return files;
+            return files.ToList();
         }
     }
 }

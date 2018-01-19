@@ -13,7 +13,6 @@ namespace dlpzipcons
     class Program
     {
         private static String archiveFile;
-        private static String[] files;
         private static DLPZipConfig config;
 
         static void Main(string[] args)
@@ -59,23 +58,20 @@ namespace dlpzipcons
             config = Config.ReadConfig();
 
             archiveFile = args[1];
-            files = args.Skip(2).Take(args.Length).ToArray();
-
             DLPZipUtil.Trace("Archive file is", archiveFile);
-            DLPZipUtil.Trace("Argument files are", String.Join(", ", files));
-            foreach(String s in files)
+
+            List<string> inputFiles = new List<string>();
+            for (int i = 2; i < args.Length; i++)
             {
-                String[] files = DLPZipUtil.ExpandFiles(s);
-                foreach(String f in files)
-                {
-                    DLPZipUtil.Trace("Expanded file name: ", f);
-                }
+                DLPZipUtil.Trace("Input files:", args[i]);
+                List<string> expandedfiles = DLPZipUtil.ExpandFiles(args[i]);
+                inputFiles.AddRange(expandedfiles);
             }
-            
+          
             switch (args[0])
             {
                 case "a":
-                    addFiles();
+                    DLPZipFile.addFiles(archiveFile, inputFiles);
                     break;
                 case "b":
                 case "d":
@@ -95,14 +91,7 @@ namespace dlpzipcons
             }
         }
 
-        private static void addFiles()
-        {
-            DLPZipUtil.Trace("addFiles()");
-
-            DLPZipUtil.Trace("~addFiles()");
-        }
-
-        private static void DLPZipUsage()
+      private static void DLPZipUsage()
         {
             System.Console.WriteLine("Usage: to be completed");
         }
