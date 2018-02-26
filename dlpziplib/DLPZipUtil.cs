@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using System.Diagnostics; // for trace output
 using System.IO; // for file expansion
 
+using Word = Microsoft.Office.Interop.Word;
+using Microsoft.Office.Core;
+
 namespace dlpziplib
 {
     public class DLPZipUtil
@@ -27,7 +30,7 @@ namespace dlpziplib
             Trace("FileName is:", Path.GetFileName(path));
             if (root.Length == 0)
             {
-                files = Directory.GetFiles(Directory.GetCurrentDirectory(), Path.GetFileName(path));
+                files = Directory.GetFiles(".\\", Path.GetFileName(path));
             }
             else
                 files = Directory.GetFiles(root, Path.GetFileName(path));
@@ -39,6 +42,28 @@ namespace dlpziplib
 
             Trace("~ExpandFiles()");
             return files.ToList();
+        }
+
+        public static void getWordInfo(string fileName)
+        {
+            Trace("getWordInfo() " + fileName);
+            var word = new Word.Application();
+            Word.Document doc = word.Documents.Open(fileName);
+            
+            DocumentProperties properties = (DocumentProperties)doc.BuiltInDocumentProperties;
+            foreach (DocumentProperty prop in properties)
+            {
+                Trace(prop.Name + ": " + prop.Value.ToString());
+            }
+
+            //author & classification
+            properties = (DocumentProperties)doc.CustomDocumentProperties;
+
+            foreach (DocumentProperty prop in properties)
+            {
+                Trace(prop.Name + ": " + prop.Value.ToString());
+            }
+            Trace("~getWordInfo()");
         }
     }
 }

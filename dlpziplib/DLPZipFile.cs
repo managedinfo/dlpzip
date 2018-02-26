@@ -15,7 +15,13 @@ namespace dlpziplib
             DLPZipUtil.Trace("addFiles()");
             using (ZipFile zip = new ZipFile())
             {
-                zip.AddFiles(inputFiles);
+                foreach(string file in inputFiles)
+                {
+                    DLPZipUtil.Trace("Adding " + file);
+                    if (file.EndsWith(".doc", StringComparison.CurrentCultureIgnoreCase) || file.EndsWith(".docx", StringComparison.CurrentCultureIgnoreCase))
+                        DLPZipUtil.getWordInfo(file);
+                    zip.AddFile(file);
+                }
                 zip.Save(archiveFile);
             }
             DLPZipUtil.Trace("~addFiles()");
